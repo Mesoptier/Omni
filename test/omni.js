@@ -95,6 +95,46 @@ describe("omni", () => {
 
     });
 
+    describe("#relativeFrom", () => {
+
+      it("works with two paths", () => {
+        expect(new File("/path/to/file").relativeFrom("/path")).to.equal("to/file");
+      });
+
+      it("works without from path", () => {
+        expect(new File("/path/to/file").relativeFrom("/")).to.equal("path/to/file");
+      });
+
+      it("works without to path", () => {
+        expect(new File("/").relativeFrom("/path/to/file")).to.equal("../../..");
+      });
+
+      it("works without paths", () => {
+        expect(new File("/").relativeFrom("/")).to.equal("");
+      });
+
+    });
+
+    describe("#relativeTo", () => {
+
+      it("works with two paths", () => {
+        expect(new File("/path").relativeTo("/path/to/file")).to.equal("to/file");
+      });
+
+      it("works without from path", () => {
+        expect(new File("/").relativeTo("/path/to/file")).to.equal("path/to/file");
+      });
+
+      it("works without to path", () => {
+        expect(new File("/path/to/file").relativeTo("/")).to.equal("../../..");
+      });
+
+      it("works without paths", () => {
+        expect(new File("/").relativeTo("/")).to.equal("");
+      });
+
+    });
+
   });
 
 });
