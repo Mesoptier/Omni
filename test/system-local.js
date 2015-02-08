@@ -3,7 +3,6 @@ chai.use(require("chai-spies"));
 chai.use(require("chai-things"));
 chai.use(require("chai-as-promised"));
 var expect = chai.expect;
-var mock = require("mock-fs");
 var {EventEmitter2} = require("eventemitter2");
 
 import {Local} from "../lib/omni";
@@ -13,21 +12,7 @@ describe("omni.Local", () => {
   var vfs;
 
   beforeEach(() => {
-    mock({
-      "mock": {
-        "file.txt": "",
-        "directory": {
-          "file2.txt": "",
-          "directory2": {}
-        }
-      }
-    });
-
-    vfs = new Local("mock");
-  });
-
-  afterEach(() => {
-    mock.restore()
+    vfs = new Local(__dirname + "/mock");
   });
 
   describe("#readdir", () => {
@@ -35,14 +20,15 @@ describe("omni.Local", () => {
     it("lists the nodes in a directory", () => {
       return vfs.readdir("/")
         .then(nodes => {
-          expect(nodes).to.have.length(2)
-            .and.to.all.be.instanceOf(File)
+          expect(nodes).to.have.length(2);
+          expect(nodes[0]).to.be.a("string");
+          expect(nodes[1]).to.be.a("string");
         });
     });
 
     it("throws an error when the directory doesn't exist", () => {
       return expect(vfs.readdir("/non/existent/directory"))
-        .to.be.rejectedWith("no such file or directory");
+        .to.be.rejectedWith("ENOENT");
     });
 
   });
@@ -66,7 +52,7 @@ describe("omni.Local", () => {
 
     it("throws an error when the file does not exist", () => {
       return expect(vfs.stat("/non/existent/directory"))
-        .to.be.rejectedWith("no such file or directory");
+        .to.be.rejectedWith("ENOENT");
     });
 
   });
@@ -85,7 +71,7 @@ describe("omni.Local", () => {
 
     it("throws an error when the file does not exist", () => {
       return expect(vfs.statType("/non/existent/directory"))
-        .to.be.rejectedWith("no such file or directory");
+        .to.be.rejectedWith("ENOENT");
     });
 
   });
@@ -99,8 +85,8 @@ describe("omni.Local", () => {
 
     it("emits 'file' event for files", (done) => {
       var spy = chai.spy((file) => {
-        expect(file).to.be.instanceOf(File);
-        expect(["/file.txt", "/directory/file2.txt"]).to.include(file.path);
+        expect(file).to.be.a("string");
+        expect(["/file.txt", "/directory/file2.txt"]).to.include(file);
       });
 
       vfs.walk("/")
@@ -113,8 +99,8 @@ describe("omni.Local", () => {
 
     it("emits 'directory' event for directories", (done) => {
       var spy = chai.spy((file) => {
-        expect(file).to.be.instanceOf(File);
-        expect(["/directory", "/directory/directory2"]).to.include(file.path);
+        expect(file).to.be.a("string");
+        expect(["/directory", "/directory/directory2"]).to.include(file);
       });
 
       vfs.walk("/")
