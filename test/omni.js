@@ -1,43 +1,43 @@
-var chai = require("chai");
+var chai = require('chai');
 var expect = chai.expect;
 
-import * as omni from "../lib/omni";
-import {Stats} from "../lib/models";
+import * as omni from '../lib/omni';
+import Stats, { TYPE_FILE, TYPE_DIRECTORY } from '../lib/models/stats';
 
-describe("omni", () => {
+describe('omni', () => {
 
-  it("exposes Local", () => {
-    expect(omni).to.have.property("Local");
+  it('exposes Local', () => {
+    expect(omni).to.have.property('Local');
   });
 
-  describe("Stats", () => {
+  describe('Stats', () => {
 
-    it("exposes properties: type, mime", () => {
-      var stats = new Stats("type", "mime");
-      expect(stats).to.have.property("type", "type");
-      expect(stats).to.have.property("mime", "mime");
+    it('exposes properties: type, mime', () => {
+      var stats = new Stats(TYPE_FILE, 'mime');
+      expect(stats).to.have.property('type', TYPE_FILE);
+      expect(stats).to.have.property('mime', 'mime');
     });
 
-    describe("isFile", () => {
+    describe('isFile', () => {
 
-      it("with type: file", () => {
-        expect(new Stats("file", null).isFile).to.equal(true);
+      it('with type: file', () => {
+        expect(new Stats(TYPE_FILE, null).isFile).to.equal(true);
       });
 
-      it("with type: directory", () => {
-        expect(new Stats("directory", null).isFile).to.equal(false);
+      it('with type: directory', () => {
+        expect(new Stats(TYPE_DIRECTORY, null).isFile).to.equal(false);
       });
 
     });
 
-    describe("isDirectory", () => {
+    describe('isDirectory', () => {
 
-      it("with type: directory", () => {
-        expect(new Stats("directory", null).isDirectory).to.equal(true);
+      it('with type: directory', () => {
+        expect(new Stats(TYPE_DIRECTORY, null).isDirectory).to.equal(true);
       });
 
-      it("with type: file", () => {
-        expect(new Stats("file", null).isDirectory).to.equal(false);
+      it('with type: file', () => {
+        expect(new Stats(TYPE_FILE, null).isDirectory).to.equal(false);
       });
 
     });
