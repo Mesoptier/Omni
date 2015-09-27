@@ -7,3 +7,6 @@ lib-es5/
 # Node
 node_modules/
 *.log
+
+# Sublime Text
+*.sublime-*
